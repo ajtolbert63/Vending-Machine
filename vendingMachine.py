@@ -25,7 +25,6 @@ class VendingMachine:
         self.cart = []
 
     def input(self):
-        # TODO: Use regex to get everything after item and before a number as item name for add and buy
         while True:
             usr_in = input('VendingMachine>')
             args = usr_in.split()
@@ -129,7 +128,7 @@ exit                            exit the vending machine
         self.history_list.reverse()
 
     def _done(self):
-        # TODO: return balance and clear for new events
+        """return balance and clear for new events"""
         print(self.mc.change(0))
         self.items.clear()
         self.cart.clear()
