@@ -1,3 +1,4 @@
+import re
 import item
 import moneyCounter
 
@@ -58,6 +59,9 @@ class VendingMachine:
                     self.help()
 
     def _buy(self, args, usr_in):
+        args[2] = re.findall('(?<=item)(.*?)(?=[0-9])', usr_in)[0].strip()
+        for i in range(len(args[2].split())-1):
+            args.pop(3+i)
         args[4] = args[3:8]
         try:
             i = self.items.get(args[2])
@@ -71,7 +75,7 @@ class VendingMachine:
             if self.mc.balance_available - i.price >= 0:
                 i.buy()
                 self.history_list.append(usr_in)
-                print('change:' + self.mc.change(i.price))
+                print('change:', self.mc.change(i.price))
             else:
                 raise InsufficientFunds(f"need ${-1 * (self.mc.balance_available - i.price):.2f} more")
         except InsufficientFunds as e:
@@ -79,6 +83,9 @@ class VendingMachine:
             raise ItemError
 
     def _add(self, args, usr_in):
+        args[2] = re.findall('(?<=item)(.*?)(?=[0-9])', usr_in)[0].strip()
+        for i in range(len(args[2].split())-1):
+            args.pop(3+i)
         try:
             if args[1] == 'item':
                 if self.items.get(args[2]) is None:

@@ -6,15 +6,15 @@ class MoneyCounter:
         c = self.balance_available - price
         ret = '$' + f'{c:.2f}'
         c *= 100  # Convert to cents
-        o = c // 100
+        o = round(c // 100, 2)
         c -= o * 100
-        q = c // 25
+        q = round(c // 25, 2)
         c -= q * 25
-        d = c // 10
+        d = round(c // 10, 2)
         c -= d * 10
-        n = c // 5
+        n = round(c // 5, 2)
         c -= n * 5
-        p = c
+        p = round(c, 2)
         c -= p
         self.balance_available = 0
         return [o, q, d, n, p], ret
