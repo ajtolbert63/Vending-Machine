@@ -16,7 +16,7 @@ class Item:
         self.name = name
 
     def __str__(self):
-        return f'{self.name}({self.id}): {self.inventory}, costs: {self.price:.2f}'
+        return f'{self.name}({self.id}): {self.inventory}, costs: ${self.price:.2f}'
 
     def buy(self):
         if self.inventory > 0:

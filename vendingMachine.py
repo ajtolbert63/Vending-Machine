@@ -10,6 +10,9 @@ class InsufficientFunds(Exception):
     pass
 
 
+class ItemError(Exception):
+    pass
+
 class VendingMachine:
 
     def __init__(self):
@@ -21,8 +24,8 @@ class VendingMachine:
         self.cart = []
 
     def input(self):
+        # TODO: Use regex to get everything after item and before a number as item name for add and buy
         while True:
-            # TODO: Change history to list of transactions
             usr_in = input('VendingMachine>')
             args = usr_in.split()
             match args[0]:
@@ -33,17 +36,25 @@ class VendingMachine:
                 case 'inventory':
                     self._inventory()
                 case 'add':
-                    self._add(args, usr_in)
+                    try:
+                        self._add(args, usr_in)
+                    except ValueError as e:
+                        print(e)
+                        self.help()
+                        continue
                 case 'buy':
                     # TODO: add case for just adding money
-                    self._buy(args, usr_in)
+                    try:
+                        self._buy(args, usr_in)
+                    except ItemError:
+                        continue
                 case 'help':
                     self.help()
                 case 'exit':
-                    self.done()
+                    self._done()
                     break
                 case _:
-                    print(f'\'usr_in\' is not a valid command')
+                    print(f'\'{usr_in}\' is not a valid command')
                     self.help()
 
     def _buy(self, args, usr_in):
@@ -51,20 +62,21 @@ class VendingMachine:
         try:
             i = self.items.get(args[2])
             if i is None:
-                raise ItemNotFound(f'No item \'{args[1]}\' found in inventory')
+                raise ItemNotFound(f'No item \'{args[2]}\' found in inventory')
         except ItemNotFound as e:
             print(e)
-            return
+            raise ItemError
         try:
             self.mc.balance(args[4])
             if self.mc.balance_available - i.price >= 0:
                 i.buy()
                 self.history_list.append(usr_in)
-                print(self.mc.change(i.price))
+                print('change:' + self.mc.change(i.price))
             else:
-                raise InsufficientFunds(f"need {-1 * (self.mc.balance_available - i.price)} more")
+                raise InsufficientFunds(f"need ${-1 * (self.mc.balance_available - i.price):.2f} more")
         except InsufficientFunds as e:
-            print(e)
+            print('InsufficientFunds!', e)
+            raise ItemError
 
     def _add(self, args, usr_in):
         try:
@@ -82,9 +94,9 @@ class VendingMachine:
 
     def _inventory(self):
         # print('Name (ID)\tPrice\tCount')
-        for i in self.items:
-            print(self.items[i])
-            break
+        if self.items:
+            for i in self.items:
+                print(self.items[i])
         else:
             print('the inventory is empty')
 
@@ -102,9 +114,9 @@ exit                            exit the vending machine
 
     def _history(self):
         self.history_list.reverse()
-        for command in self.history_list:
-            print(command)
-            break
+        if self.history_list:
+            for command in self.history_list:
+                print(command)
         else:
             print('no transaction history')
         self.history_list.reverse()

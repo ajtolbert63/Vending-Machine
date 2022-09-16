@@ -4,7 +4,7 @@ class MoneyCounter:
 
     def change(self, price):
         c = self.balance_available - price
-        ret = '$' + str(c)
+        ret = '$' + f'{c:.2f}'
         c *= 100  # Convert to cents
         o = c // 100
         c -= o * 100
