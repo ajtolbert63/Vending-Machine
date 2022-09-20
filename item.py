@@ -22,4 +22,4 @@ class Item:
         if self.inventory > 0:
             self.inventory -= 1
         else:
-            raise OutOfStock
+            raise OutOfStock(f'{self.name} is out of stock!')
