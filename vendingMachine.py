@@ -137,9 +137,11 @@ class VendingMachine:
                 if self.items.get(args[2]) is None:
                     self.items[args[2]] = item.Item(self.next_ID, args[2], args[4], args[3])
                     self.next_ID += 1
+                    print(f'Successfully added item {self.items[args[2]]}')
                 else:
                     self.items[args[2]].inventory += args[3]
                     self.items[args[2]].price = args[4]
+                    print(f'Successfully updated item {self.items[args[2]]}')
                 self.history_list.append(usr_in)
             else:
                 raise IndexError
@@ -164,8 +166,8 @@ class VendingMachine:
     def help():
         """Display list of available commands to the user"""
         print('''
-balance                         shows the balance of the current transaction                               
-history                         prints list of commands                           
+balance                         shows the balance of the vending machine                              
+history                         prints list of transactions                          
 inventory                       prints current inventory (name, id, price, count)                          
 add item <str> <int> <float>    add item to inventory
 buy item <str> {5}<int>         immediately buy item with provided coins
